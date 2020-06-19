@@ -1,0 +1,7 @@
+title: Unnamed project
+description: Here you can put a short description of your awesome project
+menu:
+  - title: Source code
+    url: "https://github.com/yourusername/reponame"
+  - title: My other projects
+    url: "https://projects.six-two.dev/"

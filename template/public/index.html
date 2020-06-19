@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="{{ site.description }}"
+    />
+    <link rel="stylesheet" href="%PUBLIC_URL%/index.css">
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>{{ site.title }}</title>
+  </head>
+  <body>
+    <div class="page">
+      <header class="page-header">
+        <span class="page-title">{{ site.title }}</span>
+        <nav>
+          {% for link in site.menu %}
+          <a href="{{ link.url }}">
+            {{ link.title }}
+          </a>
+          {% endfor %}
+        </nav>
+      </header>
+      <div class="page-content">
+        <noscript>
+          <div class="no-script">
+            You need to enable JavaScript to run this app.
+          </div>
+        </noscript>
+        <div id="root">
+          If you see this message (longer than a few seconds) your browser could not load the application.
+          Here are some things that you can try to get it working:
+          <ul>
+            <li>Update your browser to the latest version</li>
+            <li>Disable content blocking plugins (like NoScript, AdBlock, ...) for this website</li>
+            <li>If you are on a mobile device: try opening this link on a laptop/desktop computer</li>
+            <li>Open this website with the latest version of Firefox or Chrome</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
