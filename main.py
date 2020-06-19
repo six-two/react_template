@@ -68,7 +68,12 @@ class TemplateBuilder:
     def replaceFiles(self, changedFileList):
         if self.ask:
             self.confirmChanges(changedFileList)
-        pass
+
+        for relPath in changedFileList:
+            inputFile = os.path.join(self.tmpFolder, relPath)
+            outputFile = os.path.join(self.reactFolder, relPath)
+            data = readFileBytes(inputFile)
+            writeFileBytes(outputFile, data)
 
     def confirmChanges(self, changedFileList):
         if changedFileList:
@@ -77,13 +82,14 @@ class TemplateBuilder:
                 if status != FolderCompare.SAME:
                     if (self.overwrite or status != FolderCompare.CHANGED):
                         print(" '{}': {}".format(relPath, status))
+
+            choice = input("Do you want to continue? [y/N]")
+            if not choice.lower().startswith("y"):
+                print("Aborted")
+                sys.exit(0)
         else:
             print("No files will be changed")
 
-        choice = input("Do you want to continue? [y/N]")
-        if not choice.lower().startswith("y"):
-            print("Aborted")
-            sys.exit(0)
 
 class FolderCompare:
     SAME = "SAME"
