@@ -11,6 +11,7 @@ LIQUID_FILE_EXTENSION = ".liquid"
 CODEC = "utf-8"
 # Debugging switches
 DONT_WRITE_FILES = False
+CONFIRM_FORCE_OPTION = False
 
 # Overwrite files, which might result in changes made by the user being lost
 OVERWRITE_OPTION = "--force"
@@ -37,10 +38,10 @@ class TemplateBuilder:
             pass
         os.makedirs(self.tmpFolder)
 
-        if self.overwrite:
+        if self.overwrite and CONFIRM_FORCE_OPTION:
             print("You are using the '{}' option, which might result in data loss")
             print("Backup or commit your code before executing this action!");
-            print("Do you really want to force overwrites on all existing files? [yes/NO]")
+            print("Do you really want to force overwrites on all existing files? [y/N]")
             a = input();
             if not a.lower().startswith("y"):
                 print("Aborted")
@@ -54,16 +55,73 @@ class TemplateBuilder:
         # step 3: replace files that have changed
         self.replaceFiles(changes)
 
-    def getChangedFileList(self):#returns [(relPath, change)]
-        pass
+    def getChangedFileList(self):
+        changes = FolderCompare.compareFolders(self.tmpFolder, self.reactFolder)
+
+        statusList = [FolderCompare.ADD]
+        if self.overwrite:
+            statusList.append(FolderCompare.CHANGED)
+
+        filteredChanges = FolderCompare.filterByStatus(changes, statusList)
+        return filteredChanges
 
     def replaceFiles(self, changedFileList):
         if self.ask:
-            self.confirmChanges(changes)
+            self.confirmChanges(changedFileList)
         pass
 
     def confirmChanges(self, changedFileList):
-        pass
+        if changedFileList:
+            print("The following changes will be made")
+            for relPath, status in changedFileList.items():
+                if status != FolderCompare.SAME:
+                    if (self.overwrite or status != FolderCompare.CHANGED):
+                        print(" '{}': {}".format(relPath, status))
+        else:
+            print("No files will be changed")
+
+        choice = input("Do you want to continue? [y/N]")
+        if not choice.lower().startswith("y"):
+            print("Aborted")
+            sys.exit(0)
+
+class FolderCompare:
+    SAME = "SAME"
+    ADD = "ADD"
+    CHANGED = "OVERWRITE"
+
+    @staticmethod
+    def filterByStatus(changedFileList, allowedStatusList):
+        filtered = {}
+        for relPath, status in changedFileList.items():
+            if status in allowedStatusList:
+                filtered[relPath] = status
+        return filtered
+
+    @staticmethod
+    def compareFolders(sourceFolder, destFolder):
+        diff = {}
+        for root, dirs, files in os.walk(sourceFolder):
+           for name in files:
+              sourceFile = os.path.join(root, name)
+              relPath = removePathPrefix(sourceFile, sourceFolder)
+              destFile = os.path.join(destFolder, relPath)
+
+              status = FolderCompare.compareFileContents(sourceFile, destFile)
+              diff[relPath] = status
+        return diff
+
+    @staticmethod
+    def compareFileContents(sourceFile, destFile):
+        if not os.path.exists(destFile):
+            return FolderCompare.ADD
+
+        sourceBytes = readFileBytes(sourceFile)
+        destBytes = readFileBytes(destFile)
+        if sourceBytes == destBytes:
+            return FolderCompare.SAME
+        else:
+            return FolderCompare.CHANGED
 
 
 class Preprocessor:
