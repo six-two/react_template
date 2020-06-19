@@ -4,7 +4,7 @@ import os
 import yaml
 from liquid import Liquid
 import shutil
-from munch import munchify
+from munch import munchify, DefaultMunch
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 LIQUID_FILE_EXTENSION = ".liquid"
@@ -83,7 +83,7 @@ class TemplateBuilder:
                     if (self.overwrite or status != FolderCompare.CHANGED):
                         print(" '{}': {}".format(relPath, status))
 
-            choice = input("Do you want to continue? [y/N]")
+            choice = input("Do you want to continue? [y/N]\n")
             if not choice.lower().startswith("y"):
                 print("Aborted")
                 sys.exit(0)
@@ -134,7 +134,7 @@ class Preprocessor:
     def __init__(self, yamlPath):
         yamlText = readFileBytes(yamlPath).decode(CODEC)
         # use munchify so that keys can be accessed using the dot notation
-        self.yamlData = munchify(yaml.safe_load(yamlText))
+        self.yamlData = DefaultMunch.fromDict(munchify(yaml.safe_load(yamlText)), "")
 
     def processFolder(self, inputFolder, outputFolder):
         for root, dirs, files in os.walk(inputFolder):
