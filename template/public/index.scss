@@ -1,0 +1,146 @@
+/* Inspired by the jekyll minima theme */
+
+$header-color-fg: #ddd;
+$header-color-bg: #444;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+    max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.page-header {
+  height: 50px;
+  background-color: $header-color-bg;
+  color: $header-color-fg;
+
+  .page-title {
+    display: inline-block;
+    font-size: 30px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 5px 20px;
+  }
+
+  // img {
+  //   height: 40px;
+  // }
+
+  nav {
+    float: right;
+    line-height: 45px;
+    background-color:$header-color-bg;
+
+    .nav-trigger{
+        display:none
+    }
+
+    .menu-icon{
+        display:none
+    }
+
+    a{
+        margin-right:20px;
+        vertical-align: middle;
+        color: $header-color-fg;
+        font-size: 20px;
+
+        &:hover {
+          color: #fc0;
+        }
+    }
+  }
+}
+
+.no-script {
+  font-size: 20pt;
+  color: red;
+  text-align: center;
+}
+
+@media screen and (max-width: 700px){
+  .page-header {
+    .page-title {
+      /* Make space for nav button */
+      margin-right: 60px;
+    }
+
+    nav{
+      position:absolute;
+      top:5px;
+      right:5px;
+      background-color:$header-color-fg;
+      border:1px solid black;
+      border-radius:5px;
+      text-align:right;
+
+      label[for="nav-trigger"]{
+        display:block;
+        float:right;
+        width:36px;
+        height:36px;
+        z-index:2;
+        cursor:pointer
+      }
+
+      .menu-icon{
+        display:block;
+        float:right;
+        width:36px;
+        height:26px;
+        line-height:0;
+        padding-top:10px;
+        text-align:center;
+
+        svg {
+            fill: $header-color-bg;
+        }
+      }
+
+      .trigger{
+          clear:both;
+          display:none
+      }
+
+      input:checked ~ .trigger{
+          display:block;
+          padding-bottom:5px
+      }
+
+      a{
+          display:block;
+          color: black;
+          padding:5px 10px;
+          margin-left:20px;
+          margin-right:0;
+          font-size: 20px;
+          line-height:initial;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 500px){
+  .page-header .page-title {
+    font-size: 25px;
+  }
+}
+
+@media screen and (max-width: 300px){
+  .page-header .page-title {
+    font-size: 20px;
+  }
+}
