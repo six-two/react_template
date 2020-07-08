@@ -21,6 +21,11 @@ OVERWRITE_OPTION = "--force"
 ASK_OPTION = "--ask"
 # The dir to temporarily store the processed template files in
 TMP_DIR = "/tmp/react_template"
+# Compress html files
+COMPRESS_HTML = True
+
+if COMPRESS_HTML:
+    import htmlmin
 
 class TemplateBuilder:
     def __init__(self, reactFolder, ask, overwrite):
@@ -163,8 +168,12 @@ class Preprocessor:
             subprocess.run(["sassc", "--style", "compressed", inputFile, outputFile])
             return
 
-        writeFileBytes(outputFile, fileBytes)
+        if COMPRESS_HTML and (outputFile.endswith(".htm") or outputFile.endswith(".html")):
+            fileAsString = fileBytes.decode(CODEC)
+            processedString = htmlmin.minify(fileAsString, remove_comments=True, remove_empty_space=True)
+            fileBytes = processedString.encode(CODEC)
 
+        writeFileBytes(outputFile, fileBytes)
 
 def removePathPrefix(path, prefixToRemove):
     # remove prefix
