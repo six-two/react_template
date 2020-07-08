@@ -21,11 +21,13 @@ a {
 }
 
 .page-header {
+  display: flex;
   height: 50px;
   background-color: $header-color-bg;
   color: $header-color-fg;
 
   #page-title {
+    flex: 1;
     display: inline-block;
     font-size: 30px;
     font-weight: bold;
