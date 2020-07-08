@@ -1,1 +1,1 @@
-pip3 install pyyaml liquidpy munch --user
+pip3 install pyyaml liquidpy munch htmlmin --user
