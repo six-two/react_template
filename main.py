@@ -170,7 +170,8 @@ class Preprocessor:
 
         if COMPRESS_HTML and (outputFile.endswith(".htm") or outputFile.endswith(".html")):
             fileAsString = fileBytes.decode(CODEC)
-            processedString = htmlmin.minify(fileAsString, remove_comments=True, remove_empty_space=True)
+            processedString = htmlmin.minify(fileAsString,
+                remove_comments=True, remove_empty_space=True) + "\n"
             fileBytes = processedString.encode(CODEC)
 
         writeFileBytes(outputFile, fileBytes)
