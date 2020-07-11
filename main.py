@@ -9,7 +9,6 @@ import subprocess
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 LIQUID_FILE_EXTENSION = ".liquid"
-SCSS_FILE_EXTENSION = ".scss"
 CODEC = "utf-8"
 # Debugging switches
 DONT_WRITE_FILES = False
@@ -162,9 +161,9 @@ class Preprocessor:
             fileAsString = fileBytes.decode(CODEC)
             processedString = Liquid(fileAsString).render(site=self.yamlData)
             fileBytes = processedString.encode(CODEC)
-        elif inputFile.endswith(SCSS_FILE_EXTENSION):
+        elif inputFile.endswith(".scss") or inputFile.endswith(".sass"):
             print("Processing '{}'".format(inputFile))
-            outputFile = outputFile[:-len(SCSS_FILE_EXTENSION)] + ".css"
+            outputFile = outputFile[:-5] + ".css"
             subprocess.run(["sassc", "--style", "compressed", inputFile, outputFile])
             return
 
