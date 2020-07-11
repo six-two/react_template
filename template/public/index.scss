@@ -14,10 +14,38 @@ body {
 
 html, body {
     max-width: 100%;
+    min-height: 100vh;
 }
 
 a {
   text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+}
+
+.page-footer {
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  color: $header-color-fg;
+  background-color: $header-color-bg;
+  text-align: center;
+
+  a {
+    color: $header-color-fg;
+  }
 }
 
 .page-header {
@@ -50,15 +78,11 @@ a {
         display:none
     }
 
-    a{
+    a {
         margin-right:20px;
         vertical-align: middle;
         color: $header-color-fg;
         font-size: 20px;
-
-        &:hover {
-          color: #fc0;
-        }
     }
   }
 }
@@ -120,11 +144,10 @@ a {
 
       a{
           display:block;
-          color: black;
+          color: $header-color-bg;
           padding:5px 10px;
           margin-left:20px;
           margin-right:0;
-          font-size: 20px;
           line-height:initial;
       }
     }
