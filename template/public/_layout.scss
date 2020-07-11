@@ -1,0 +1,44 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  display: flex;
+  height: 50px;
+  background-color: $header-color-bg;
+  color: $header-color-fg;
+
+  #page-title {
+    flex: 1 1;
+    display: inline-block;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 5px 20px;
+    min-width: 100px;
+    /* Make space for nav button */
+    margin-right: 60px;
+
+    @media #{$big-screen} {
+      margin-right: 0px;
+    }
+  }
+}
+
+.page-content {
+  flex: 1;
+}
+
+.page-footer {
+  margin-top: 20px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  color: $header-color-fg;
+  background-color: $header-color-bg;
+  text-align: center;
+
+  a {
+    color: $header-color-fg;
+  }
+}

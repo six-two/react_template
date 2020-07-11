@@ -1,0 +1,71 @@
+.page-header nav {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background-color: $header-color-fg;
+  border: 1px solid black;
+  border-radius: 5px;
+
+  label {
+    display: block;
+    float: right;
+    width: 36px;
+    height: 36px;
+    box-sizing: border-box;
+    padding-top: 10px;
+    cursor: pointer;
+    text-align: center;
+
+    svg {
+      fill: $header-color-bg;
+    }
+  }
+
+  #nav-trigger {
+    display: none;
+  }
+
+  .trigger {
+      display: none;
+      clear: both; // force the menu icon to the top
+      text-align: right;
+      padding-bottom: 5px
+  }
+
+  input:checked ~ .trigger {
+    display: block;
+  }
+
+  a {
+    display: block;
+    color: $header-color-bg;
+    padding: 5px 10px;
+    margin-left: 20px;
+    margin-right: 0;
+    line-height: initial;
+    vertical-align: middle;
+    font-size: 20px;
+  }
+
+  @media #{$big-screen} {
+    position: static;
+    display: block;
+    line-height: 45px;
+    background-color: $header-color-bg;
+    border: none;
+
+    label {
+      display: none;
+    }
+
+    .trigger {
+      display: block;
+    }
+
+    a {
+      display: inline;
+      margin: 0px;
+      color: $header-color-fg;
+    }
+  }
+}

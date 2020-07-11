@@ -162,9 +162,18 @@ class Preprocessor:
             processedString = Liquid(fileAsString).render(site=self.yamlData)
             fileBytes = processedString.encode(CODEC)
         elif inputFile.endswith(".scss") or inputFile.endswith(".sass"):
+            inputFolder, inputFileName = os.path.split(inputFile)
+            if inputFileName.startswith("_"):
+                print("Ignoring '{}'".format(inputFile))
+                return; # do not process the file
             print("Processing '{}'".format(inputFile))
             outputFile = outputFile[:-5] + ".css"
-            subprocess.run(["sassc", "--style", "compressed", inputFile, outputFile])
+            importFolder = inputFolder  # Maybe change this?
+            subprocess.run(["sassc",
+              "--style", "compressed",
+              "--load-path", importFolder,
+               inputFile, outputFile
+            ])
             return
 
         if COMPRESS_HTML and (outputFile.endswith(".htm") or outputFile.endswith(".html")):
