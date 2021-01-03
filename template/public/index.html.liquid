@@ -55,11 +55,13 @@
         </ul>
       </div>
     </div>
-    <footer class="page-footer">
-      <a class="support-banner" href="https://www.paypal.me/patrickschlueter">
-        Like this website? Then please click here to buy me a coffee. Every bit of support helps!
-      </a>
-    </footer>
+    {% unless site.no_donate_banner %}
+      <footer class="page-footer">
+        <a class="support-banner" href="https://www.paypal.me/patrickschlueter">
+          Like this website? Then please click here to buy me a coffee. Every bit of support helps!
+        </a>
+      </footer>
+    {% endunless %}
     <script src="%PUBLIC_URL%/resize-title.js" charset="utf-8"></script>
   </body>
 </html>
