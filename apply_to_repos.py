@@ -5,8 +5,18 @@ import os
 import sys
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-REPOS = ["../react_payload_builder", "../react_did_someone_touch_this", "../react_fake_kali_login", "../react_redirect"]
 CONFIRM_ACTIONS = True
+CONFIG_FILE_NAME = "react-template.yaml"
+
+def search_for_configs(path: str):
+    project_dirs = []
+    for root, _dirs, files in os.walk(path):
+        if CONFIG_FILE_NAME in files:
+            # If the folder contains a config file, it is one of the projects
+            if os.path.realpath(root) != os.path.realpath(SCRIPT_DIR):
+                # Do not interpret this as one of the projects
+                project_dirs.append(root)
+    return project_dirs
 
 def cd(path = ""):
     os.chdir(SCRIPT_DIR) # to allow relative paths
@@ -32,25 +42,36 @@ def exec(*args):
     subprocess.call(args)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("[USAGE] <commitMessage>")
+    if len(sys.argv) != 3:
+        print("[USAGE] <project_search_root> <commitMessage>")
         sys.exit(1)
 
-    commitMessage = sys.argv[1]
-    for repo in REPOS:
-        cd(repo)
-        if isGitRepoClean():
-            if letUserConfirm("Updating '{}'".format(repo)):
-                cd()
-                exec("./main.py", repo, "--force")
+    search_root_dir = sys.argv[1]
+    commitMessage = sys.argv[2]
 
-                cd(repo)
-                exec("git", "status")
-                if letUserConfirm("Deploy the app"):
-                    exec("./run.sh", "deploy")
-                if letUserConfirm("Commit and push the changes"):
-                    exec("git", "add", ".")
-                    exec("git", "commit", "-m", commitMessage)
-                    exec("git", "push")
-        else:
-            letUserConfirm("[WARN] Skipping '{}'. Reason: Working tree not clean".format(repo))
+    print(f"[INFO] Searching for projects in '{search_root_dir}'")
+    project_folders = search_for_configs(search_root_dir)
+    if project_folders:
+        for project_dir in project_folders:
+            print(f"[INFO] Found project folder: '{project_dir}'")
+
+        for repo in project_folders:
+            cd(repo)
+            if isGitRepoClean():
+                if letUserConfirm(f"Updating '{repo}'"):
+                    cd()
+                    exec("./main.py", repo, "--force")
+
+                    cd(repo)
+                    if isGitRepoClean():
+                        print("[INFO] No files were changed")
+                    else:
+                        exec("git", "status")
+                        if letUserConfirm("Commit and push the changes"):
+                            exec("git", "add", ".")
+                            exec("git", "commit", "-m", commitMessage)
+                            exec("git", "push")
+            else:
+                letUserConfirm(f"[WARN] Skipping '{repo}'. Reason: Working tree not clean")
+    else:
+        print("[WARN] Found no project folders")
