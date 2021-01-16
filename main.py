@@ -46,9 +46,9 @@ class TemplateBuilder:
 
         if self.overwrite and CONFIRM_FORCE_OPTION:
             print("You are using the '{}' option, which might result in data loss")
-            print("Backup or commit your code before executing this action!");
+            print("Backup or commit your code before executing this action!")
             print("Do you really want to force overwrites on all existing files? [y/N]")
-            a = input();
+            a = input()
             if not a.lower().startswith("y"):
                 print("Aborted")
                 return
@@ -113,7 +113,7 @@ class FolderCompare:
     @staticmethod
     def compareFolders(sourceFolder, destFolder):
         diff = {}
-        for root, dirs, files in os.walk(sourceFolder):
+        for root, _dirs, files in os.walk(sourceFolder):
            for name in files:
               sourceFile = os.path.join(root, name)
               relPath = removePathPrefix(sourceFile, sourceFolder)
@@ -143,7 +143,7 @@ class Preprocessor:
         self.yamlData = DefaultMunch.fromDict(munchify(yaml.safe_load(yamlText)), "")
 
     def processFolder(self, inputFolder, outputFolder):
-        for root, dirs, files in os.walk(inputFolder):
+        for root, _dirs, files in os.walk(inputFolder):
            for name in files:
               inputFile = os.path.join(root, name)
               relPath = removePathPrefix(inputFile, inputFolder)
@@ -165,7 +165,7 @@ class Preprocessor:
             inputFolder, inputFileName = os.path.split(inputFile)
             if inputFileName.startswith("_"):
                 print("Ignoring '{}'".format(inputFile))
-                return; # do not process the file
+                return # do not process the file
             print("Processing '{}'".format(inputFile))
             outputFile = outputFile[:-5] + ".css"
             importFolder = inputFolder  # Maybe change this?
@@ -216,7 +216,7 @@ def readFileBytes(path):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: {} <react_project_folder> [{}] [{}]".format(sys.argv[0], ASK_OPTION, OVERWRITE_OPTION))
-        sys.exit(1);
+        sys.exit(1)
 
     reactFolder = sys.argv[1]
     ask = ASK_OPTION in sys.argv

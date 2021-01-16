@@ -26,7 +26,7 @@ def cd(path = ""):
 
 def isGitRepoClean():
     gitStatusOutput = subprocess.check_output(["git", "status"])
-    CLEAN_STRING = b"\nnothing to commit, working tree clean\n";
+    CLEAN_STRING = b"\nnothing to commit, working tree clean\n"
     return CLEAN_STRING in gitStatusOutput
 
 
