@@ -1,6 +1,6 @@
 # pylint: disable=wildcard-import, unused-wildcard-import
 from utils import *
-from pre_build import run_commands
+from pre_build import run_commands, remove_cache_files
 import os
 
 POST_BUILD_COMMANDS = "post_build"
@@ -26,3 +26,7 @@ def post_build(settings: Settings):
 
     if build_commands:
         run_commands(settings.project_dir, build_commands)
+
+    # Final clean up
+    remove_cache_files(BUILD_DIR)
+

@@ -16,20 +16,27 @@ if COMPRESS_HTML:
 
 
 def build(settings: Settings):
+    log("Loading config")
     config_path = os.path.join(BUILD_DIR, CONFIG_FILE_NAME)
     config = parse_yaml_file(config_path)
     # Make the fields accessible from liquid
     config = DefaultMunch.fromDict(munchify(config), "")
+    log("Config file loaded")
 
     # Scan all files, then process them.
     # This prevents processing a file, that was created by processing another file
-    for file_path in list_files(BUILD_DIR):
+    files = list_files(BUILD_DIR)
+    log(f"{len(files)} file(s) will be processed")
+    for file_path in files:
         process_file(config, file_path)
+    log("Build step done")
 
 
 def process_file(config, file_path: str):
+    log(f"Processing file {file_path}")
     if file_path.endswith(LIQUID_FILE_EXTENSION):
         # Compile liquid files
+        log("Rendering liquid file")
 
         # Remove liquid extension
         new_file_path = file_path[:-len(LIQUID_FILE_EXTENSION)]
@@ -38,7 +45,7 @@ def process_file(config, file_path: str):
         # process with liquid
         def process_liquid(file_contents): return Liquid(
             file_contents).render(site=config)
-        replace_file_contents(file_path, process_liquid)
+        replace_file_contents(new_file_path, process_liquid)
     elif file_path.endswith(".scss") or file_path.endswith(".sass"):
         # Compile SASS files
 
@@ -60,6 +67,7 @@ def process_file(config, file_path: str):
             return
     elif COMPRESS_HTML and (file_path.endswith(".htm") or file_path.endswith(".html")):
         # Minify the html file
+        log("Minifying the HTML file")
         def minify_html(file_contents):
             return htmlmin.minify(file_contents,
                                   remove_comments=True,

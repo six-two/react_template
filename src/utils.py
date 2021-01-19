@@ -1,7 +1,7 @@
 import shutil
 import os
 import sys
-from typing import NamedTuple
+from typing import NamedTuple, List
 # External library
 import yaml
 
@@ -10,6 +10,7 @@ import yaml
 CODEC = "utf-8"
 BUILD_DIR = "/tmp/react-template"
 CONFIG_FILE_NAME = "react-template.yaml"
+VERBOSE = True
 
 
 # Debugging switches
@@ -19,8 +20,10 @@ DONT_WRITE_FILES = False
 class Settings(NamedTuple):
     project_dir: str
     template_dir: str
-    ask: bool
-    force: bool
+
+def log(msg: str):
+    if VERBOSE:
+        print(msg)
 
 
 def rm_folder(path):
@@ -97,9 +100,9 @@ def parse_yaml_file(path):
     return yaml.safe_load(yamlText)
 
 def list_files(dir_path: str) -> List[str]:
-    files: List[str] = []
+    file_list: List[str] = []
     for root, _dirs, files in os.walk(dir_path):
         for name in files:
             file_path = os.path.join(root, name)
-            files.append(file_path)
-    return files
+            file_list.append(file_path)
+    return file_list
