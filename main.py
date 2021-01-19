@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 import sys
 import os
-import yaml
-from liquid import Liquid
 import shutil
 import subprocess
 # External library
+import yaml
+from liquid import Liquid
 from munch import munchify, DefaultMunch
 
 CONFIG_FILE_NAME = "react-template.yaml"
@@ -42,6 +42,16 @@ def rm_folder(path):
 def empty_folder(path):
     rm_folder(path)
     os.makedirs(path)
+
+def mk_parent_dir(path):
+    try:
+        os.makedirs(os.path.dirname(path))
+    except:
+        pass
+
+def my_copy(src, dst):
+    mk_parent_dir(dst)
+    shutil.copy(src, dst)
 
 
 class TemplateBuilder:
@@ -145,6 +155,7 @@ def run_post_build_commands(template_dir, project_dir):
     if build_commands:
         run_commands(template_dir, project_dir, build_commands)
 
+
 def parse_config_file(project_dir):
     yamlPath = os.path.join(project_dir, CONFIG_FILE_NAME)
     yamlText = readFileBytes(yamlPath).decode(CODEC)
@@ -223,16 +234,15 @@ class Preprocessor:
                 self.processFile(inputFile, outputFile)
 
     def processFile(self, inputFile, outputFile):
-        fileBytes = readFileBytes(inputFile)
-
         if inputFile.endswith(LIQUID_FILE_EXTENSION):
             print("Processing '{}'".format(inputFile))
             # remove liquid extension
             outputFile = outputFile[:-len(LIQUID_FILE_EXTENSION)]
+            # Copy the file, should keep permissions
+            my_copy(inputFile, outputFile)
             # process with liquid
-            fileAsString = fileBytes.decode(CODEC)
-            processedString = Liquid(fileAsString).render(site=self.yamlData)
-            fileBytes = processedString.encode(CODEC)
+            process_liquid = lambda file_contents: Liquid(file_contents).render(site=self.yamlData)
+            replace_file_contents(outputFile, process_liquid)
         elif inputFile.endswith(".scss") or inputFile.endswith(".sass"):
             inputFolder, inputFileName = os.path.split(inputFile)
             if inputFileName.startswith("_"):
@@ -247,14 +257,27 @@ class Preprocessor:
                             inputFile, outputFile
                             ])
             return
+        else:
+            # Copy the file, should keep permissions
+            my_copy(inputFile, outputFile)
 
-        if COMPRESS_HTML and (outputFile.endswith(".htm") or outputFile.endswith(".html")):
-            fileAsString = fileBytes.decode(CODEC)
-            processedString = htmlmin.minify(fileAsString,
-                                             remove_comments=True, remove_empty_space=True) + "\n"
-            fileBytes = processedString.encode(CODEC)
+            # TODO what about css, js, etc
+            if COMPRESS_HTML and (outputFile.endswith(".htm") or outputFile.endswith(".html")):
+                # Minify
+                minify_html = lambda file_contents: htmlmin.minify(file_contents,
+                                                remove_comments=True, remove_empty_space=True) + "\n"
+                replace_file_contents(outputFile, minify_html)
 
-        writeFileBytes(outputFile, fileBytes)
+
+def replace_file_contents(path, fn):
+    # read
+    fileBytes = readFileBytes(path)
+    fileAsString = fileBytes.decode(CODEC)
+    # modify
+    fileAsString = str(fn(fileAsString))
+    # write
+    fileBytes = fileAsString.encode(CODEC)
+    writeFileBytes(path, fileBytes)
 
 
 def removePathPrefix(path, prefixToRemove):
@@ -272,10 +295,7 @@ def writeFileBytes(path, content):
         print("Write prevented: '{}'".format(path))
         return
 
-    try:
-        os.makedirs(os.path.dirname(path))
-    except:
-        pass
+    mk_parent_dir(path)
 
     with open(path, "wb") as f:
         f.write(content)
