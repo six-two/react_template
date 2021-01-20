@@ -12,6 +12,7 @@ def apply_template(settings: Settings):
     if ASK:
         confirm_changes(changed_files)
 
+    print("Applying the changes...")
     for rel_path in changed_files:
         src = os.path.join(BUILD_DIR, rel_path)
         dst = os.path.join(settings.project_dir, rel_path)

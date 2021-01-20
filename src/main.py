@@ -14,7 +14,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 def build_and_apply_template(settings: Settings):
     pre_build(settings)
     build(settings)
-    # post_build(settings)
+    post_build(settings)
     apply_template(settings)
 
 
