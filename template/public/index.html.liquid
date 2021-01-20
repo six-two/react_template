@@ -31,7 +31,11 @@
         </label>
         <div class="trigger">
           {% for link in site.menu %}
-          <a id={{ link.id }} href="{{ link.url }}">
+          <a 
+            {% unless link.id == "" or link.id == nil %}
+              id="{{ link.id }}"
+            {% endunless %}
+            href="{{ link.url }}">
             {{ link.title }}
           </a>
           {% endfor %}
