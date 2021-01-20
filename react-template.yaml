@@ -3,5 +3,7 @@ description: Here you can put a short description of your awesome project
 menu:
   - title: Source code
     url: "https://github.com/yourusername/reponame"
+    id: page-nav-source
   - title: My other projects
     url: "https://projects.six-two.dev/"
+    id: page-nav-projects
