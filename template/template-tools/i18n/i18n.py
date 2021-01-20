@@ -42,7 +42,7 @@ def inject_script_url_into_config():
     yaml_path = os.path.join(project_dir, CONFIG_PATH)
     config = parse_yaml_file(yaml_path)
     custom_html_head = config.get(CUSTOM_HTML_HEAD_FIELD, "")
-    custom_html_head += f'<script src="/{JS_OUTPUT_NAME}"></script>'
+    custom_html_head += f'<script src="%PUBLIC_URL%/{JS_OUTPUT_NAME}"></script>'
     config[CUSTOM_HTML_HEAD_FIELD] = custom_html_head
     text = yaml.safe_dump(config)
     write_file_bytes(CONFIG_PATH, text.encode(CODEC))
