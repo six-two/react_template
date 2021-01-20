@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-# TODO
-# Hook for pre_build (modifies config file)
-# Read <project>/i18n.yaml, convert to json and inline into the i18n.js file
-# copy modified js file to public folder
-# Append script location to `customHtmlHead` in react-templaye.yaml
+
+# ================== i18n.py =====================
+# It localizes website elements.
+# Hook type: pre_build (modifies config file)
+# Configuration:
+#  Create a i18n.yaml file in your project root. Look at i18n.yaml.example to get a feel for the structure
+#  Add the correct id to every element (via react-template.yaml)
 
 import json
 import os

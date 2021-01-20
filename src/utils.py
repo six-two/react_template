@@ -21,6 +21,7 @@ class Settings(NamedTuple):
     project_dir: str
     template_dir: str
 
+
 def log(msg: str):
     if VERBOSE:
         print(msg)
@@ -50,6 +51,15 @@ def my_copy(src, dst):
     shutil.copy(src, dst)
 
 
+def removePathPrefix(path, prefixToRemove):
+    # remove prefix
+    path = path[len(prefixToRemove):]
+    # remove leading slashes
+    while os.path.isabs(path):
+        path = path[1:]
+    return path
+
+
 def replace_file_contents(path, fn):
     # read
     fileBytes = readFileBytes(path)
@@ -59,15 +69,6 @@ def replace_file_contents(path, fn):
     # write
     fileBytes = fileAsString.encode(CODEC)
     writeFileBytes(path, fileBytes)
-
-
-def removePathPrefix(path, prefixToRemove):
-    # remove prefix
-    path = path[len(prefixToRemove):]
-    # remove leading slashes
-    while os.path.isabs(path):
-        path = path[1:]
-    return path
 
 
 def writeFileBytes(path, content):
@@ -98,6 +99,7 @@ def confirm_or_exit():
 def parse_yaml_file(path):
     yamlText = readFileBytes(path).decode(CODEC)
     return yaml.safe_load(yamlText)
+
 
 def list_files(dir_path: str) -> List[str]:
     file_list: List[str] = []
