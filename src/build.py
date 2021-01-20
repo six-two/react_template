@@ -8,11 +8,6 @@ from liquid import Liquid
 from munch import munchify, DefaultMunch
 
 LIQUID_FILE_EXTENSION = ".liquid"
-COMPRESS_HTML = True
-
-if COMPRESS_HTML:
-    # External lib
-    import htmlmin
 
 
 def build(settings: Settings):
@@ -65,15 +60,6 @@ def process_file(config, file_path: str):
                             file_path, output_file_path
                             ])
             return
-    elif COMPRESS_HTML and (file_path.endswith(".htm") or file_path.endswith(".html")):
-        # Minify the html file
-        log("Minifying the HTML file")
-        def minify_html(file_contents):
-            return htmlmin.minify(file_contents,
-                                  remove_comments=True,
-                                  remove_empty_space=True) + "\n"
-        replace_file_contents(file_path, minify_html)
-
     else:
         # Keep all other files as they are
         pass
