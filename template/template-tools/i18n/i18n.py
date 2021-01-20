@@ -23,19 +23,19 @@ CONFIG_PATH = "react-template.yaml"
 CUSTOM_HTML_HEAD_FIELD = "customHtmlHead"
 
 
-def create_i18n_js(project_dir):
+def create_i18n_js(project_dir: str):
     yaml_path = os.path.join(project_dir, DATA_PATH)
     data = parse_yaml_file(yaml_path)
     js_output_path = "public/"+JS_OUTPUT_NAME
     inject_data_into_js_file(data, JS_INPUT_PATH, js_output_path)
 
 
-def inject_data_into_js_file(data, js_input_file, js_output_file):
-    text = readFileBytes(js_input_file).decode(CODEC)
+def inject_data_into_js_file(data, js_input_file: str, js_output_file: str):
+    text = read_file_bytes(js_input_file).decode(CODEC)
     new_text = text.replace(DATA_PLACEHOLDER, json.dumps(data))
     if new_text == text:
         raise Exception("JS input template has no placeholder for the data")
-    writeFileBytes(js_output_file, new_text.encode(CODEC))
+    write_file_bytes(js_output_file, new_text.encode(CODEC))
 
 
 def inject_script_url_into_config():
@@ -45,15 +45,15 @@ def inject_script_url_into_config():
     custom_html_head += f'<script src="/{JS_OUTPUT_NAME}"></script>'
     config[CUSTOM_HTML_HEAD_FIELD] = custom_html_head
     text = yaml.safe_dump(config)
-    writeFileBytes(CONFIG_PATH, text.encode(CODEC))
+    write_file_bytes(CONFIG_PATH, text.encode(CODEC))
 
 
-def parse_yaml_file(yamlPath):
-    yamlText = readFileBytes(yamlPath).decode(CODEC)
+def parse_yaml_file(yamlPath: str):
+    yamlText = read_file_bytes(yamlPath).decode(CODEC)
     return yaml.safe_load(yamlText)
 
 
-def writeFileBytes(path, content):
+def write_file_bytes(path: str, content: bytes):
     try:
         os.makedirs(os.path.dirname(path))
     except:
@@ -63,10 +63,9 @@ def writeFileBytes(path, content):
         f.write(content)
 
 
-def readFileBytes(path):
+def read_file_bytes(path: str) -> bytes:
     with open(path, "rb") as f:
-        fileBytes = f.read()
-    return fileBytes
+        return f.read()
 
 
 if __name__ == "__main__":

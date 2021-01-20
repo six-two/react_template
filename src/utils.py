@@ -1,7 +1,7 @@
 import shutil
 import os
 import sys
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Callable
 # External library
 import yaml
 
@@ -11,10 +11,6 @@ CODEC = "utf-8"
 BUILD_DIR = "/tmp/react-template"
 CONFIG_FILE_NAME = "react-template.yaml"
 VERBOSE = True
-
-
-# Debugging switches
-DONT_WRITE_FILES = False
 
 
 class Settings(NamedTuple):
@@ -27,66 +23,61 @@ def log(msg: str):
         print(msg)
 
 
-def rm_folder(path):
+def rm_folder(path: str):
     try:
         shutil.rmtree(path)
     except:
         pass
 
 
-def empty_folder(path):
+def empty_folder(path: str):
     rm_folder(path)
     os.makedirs(path)
 
 
-def mk_parent_dir(path):
+def mk_parent_dir(path: str):
     try:
         os.makedirs(os.path.dirname(path))
     except:
         pass
 
 
-def my_copy(src, dst):
+def my_copy(src: str, dst: str):
     mk_parent_dir(dst)
     shutil.copy(src, dst)
 
 
-def removePathPrefix(path, prefixToRemove):
+def remove_path_prefix(path: str, prefix_to_remove: str) -> str:
     # remove prefix
-    path = path[len(prefixToRemove):]
+    path = path[len(prefix_to_remove):]
     # remove leading slashes
     while os.path.isabs(path):
         path = path[1:]
     return path
 
 
-def replace_file_contents(path, fn):
+def replace_file_contents(path: str, fn: Callable[[str], str]):
     # read
-    fileBytes = readFileBytes(path)
-    fileAsString = fileBytes.decode(CODEC)
+    with open(path, "rb") as f:
+        file_contents = f.read().decode(CODEC)
     # modify
-    fileAsString = str(fn(fileAsString))
+    file_contents = str(fn(file_contents))
     # write
-    fileBytes = fileAsString.encode(CODEC)
-    writeFileBytes(path, fileBytes)
+    with open(path, "wb") as f:
+        f.write(file_contents.encode(CODEC))
 
 
-def writeFileBytes(path, content):
+def write_file_bytes(path: str, content: bytes):
     # create the parent folder if it did not exist
-    if (DONT_WRITE_FILES):
-        print("Write prevented: '{}'".format(path))
-        return
-
     mk_parent_dir(path)
 
     with open(path, "wb") as f:
         f.write(content)
 
 
-def readFileBytes(path):
+def read_file_bytes(path: str) -> bytes:
     with open(path, "rb") as f:
-        fileBytes = f.read()
-    return fileBytes
+        return f.read()
 
 
 def confirm_or_exit():
@@ -96,8 +87,8 @@ def confirm_or_exit():
         sys.exit(0)
 
 
-def parse_yaml_file(path):
-    yamlText = readFileBytes(path).decode(CODEC)
+def parse_yaml_file(path: str):
+    yamlText = read_file_bytes(path).decode(CODEC)
     return yaml.safe_load(yamlText)
 
 

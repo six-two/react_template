@@ -1,5 +1,6 @@
 # pylint: disable=wildcard-import, unused-wildcard-import
 from utils import *
+from typing import List
 import os
 import subprocess
 from pathlib import Path
@@ -32,7 +33,7 @@ def pre_build(settings: Settings):
 
     
 
-def run_commands(project_dir, commands):
+def run_commands(project_dir: str, commands: List[str]):
     # Change into the template directory
     old_cwd = os.getcwd()
     os.chdir(BUILD_DIR)
@@ -47,7 +48,10 @@ def run_commands(project_dir, commands):
     # Change back to the old working dir
     os.chdir(old_cwd)
 
-def remove_cache_files(root_dir):
+def remove_cache_files(root_dir: str):
     for path in Path(root_dir).rglob('.mypy_cache'):
+        log(f"Removing cache folder: {path}")
+        rm_folder(str(path))
+    for path in Path(root_dir).rglob('__pycache__'):
         log(f"Removing cache folder: {path}")
         rm_folder(str(path))

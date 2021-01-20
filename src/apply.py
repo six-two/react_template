@@ -19,13 +19,13 @@ def apply_template(settings: Settings):
         my_copy(src, dst)
 
 
-def get_changed_files(settings: Settings) -> List[str]:
-    changes = FolderCompare.compareFolders(BUILD_DIR, settings.project_dir)
+def get_changed_files(settings: Settings) -> dict:
+    changes = FolderCompare.compare_folders(BUILD_DIR, settings.project_dir)
     statusList = [FolderCompare.ADD, FolderCompare.CHANGED]
-    return FolderCompare.filterByStatus(changes, statusList)
+    return FolderCompare.filter_by_status(changes, statusList)
 
 
-def confirm_changes(changed_files):
+def confirm_changes(changed_files: dict):
     if changed_files:
         print("The following changes will be made")
         for relPath, status in changed_files.items():

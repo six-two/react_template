@@ -6,6 +6,7 @@
 # Configuration: You need to do nothing :)
 
 import os
+from typing import Callable
 # External dependencies
 import htmlmin
 import rcssmin
@@ -14,7 +15,7 @@ import rjsmin
 CODEC = "utf-8"
 
 
-def replace_file_contents(path, fn):
+def replace_file_contents(path: str, fn: Callable[[str], str]):
     # read
     with open(path, "rb") as f:
         file_contents = f.read().decode(CODEC)
@@ -39,7 +40,7 @@ def minify_js(file_contents: str) -> str:
     return rjsmin.jsmin(file_contents)
 
 
-def process_file(file_path):
+def process_file(file_path: str):
     if file_path.endswith(".htm") or file_path.endswith(".html"):
         print(f"Minifying {file_path}")
         replace_file_contents(file_path, minify_html)
