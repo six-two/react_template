@@ -3,12 +3,13 @@
 import subprocess
 import os
 import sys
+from typing import List
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIRM_ACTIONS = True
 CONFIG_FILE_NAME = "react-template.yaml"
 
-def search_for_configs(path: str):
+def search_for_configs(path: str) -> List[str]:
     project_dirs = []
     for root, _dirs, files in os.walk(path):
         if CONFIG_FILE_NAME in files:
@@ -24,15 +25,15 @@ def cd(path = ""):
         os.chdir(path)
 
 
-def isGitRepoClean():
+def is_git_repo_clean() -> bool:
     gitStatusOutput = subprocess.check_output(["git", "status"])
     CLEAN_STRING = b"\nnothing to commit, working tree clean\n"
     return CLEAN_STRING in gitStatusOutput
 
 
-def letUserConfirm(message):
+def ask_user_to_confirm(message: str) -> bool:
     if CONFIRM_ACTIONS:
-        print("Next step: " + message)
+        print("Next step:", message)
         return not input(" >> Continue? [Y/n] << ").lower().startswith("n")
     else:
         return True
@@ -43,11 +44,11 @@ def exec(*args):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("[USAGE] <project_search_root> <commitMessage>")
+        print("[USAGE] <project_search_root> <commit_message>")
         sys.exit(1)
 
     search_root_dir = sys.argv[1]
-    commitMessage = sys.argv[2]
+    commit_message = sys.argv[2]
 
     print(f"[INFO] Searching for projects in '{search_root_dir}'")
     project_folders = search_for_configs(search_root_dir)
@@ -57,21 +58,21 @@ if __name__ == "__main__":
 
         for repo in project_folders:
             cd(repo)
-            if isGitRepoClean():
-                if letUserConfirm(f"Updating '{repo}'"):
+            if is_git_repo_clean():
+                if ask_user_to_confirm(f"Updating '{repo}'"):
                     cd()
-                    exec("./main.py", repo, "--force")
+                    exec("src/main.py", repo)
 
                     cd(repo)
-                    if isGitRepoClean():
+                    if is_git_repo_clean():
                         print("[INFO] No files were changed")
                     else:
                         exec("git", "status")
-                        if letUserConfirm("Commit and push the changes"):
+                        if ask_user_to_confirm("Commit and push the changes"):
                             exec("git", "add", ".")
-                            exec("git", "commit", "-m", commitMessage)
+                            exec("git", "commit", "-m", commit_message)
                             exec("git", "push")
             else:
-                letUserConfirm(f"[WARN] Skipping '{repo}'. Reason: Working tree not clean")
+                ask_user_to_confirm(f"[WARN] Skipping '{repo}'. Reason: Working tree not clean")
     else:
         print("[WARN] Found no project folders")
