@@ -41,6 +41,7 @@ def run_commands(project_dir: str, commands: List[str]):
     # Run the build commands in the copy
     absolute_project_dir = os.path.join(old_cwd, project_dir)
     for command in commands:
+        # @SYNC to: ../template-tools/defaults.py
         command = str(command).replace("<PROJECT>", absolute_project_dir)
         print(f" Executing: {command} ".center(80, "="))
         subprocess.call(command, shell=True)
