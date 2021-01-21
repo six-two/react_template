@@ -31,7 +31,7 @@
         </label>
         <div class="trigger">
           {% for link in site.menu %}
-          <a 
+          <a
             {% unless link.id == "" or link.id == nil %}
               id="{{ link.id }}"
             {% endunless %}
@@ -62,7 +62,9 @@
     {% unless site.no_donate_banner == true %}
       <footer class="page-footer">
         <a class="support-banner" href="https://www.paypal.me/patrickschlueter">
-          Like this website? Then please click here to buy me a coffee. Every bit of support helps!
+          <span id="page-footer-donate">
+            Like this website? Then please click here to buy me a coffee. Every bit of support helps!
+          </span>
         </a>
       </footer>
     {% endunless %}
