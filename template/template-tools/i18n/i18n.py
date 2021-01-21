@@ -4,7 +4,8 @@
 # It localizes website elements.
 # Hook type: pre_build (modifies config file)
 # Configuration:
-#  Create a i18n.yaml file in your project root. Look at i18n.yaml.example to get a feel for the structure
+#  Create a i18n.yaml file in your project root. Look at i18n.yaml.example
+#  to get a feel for the structure.
 #  Add the correct id to every element (via react-template.yaml)
 
 import json
@@ -21,13 +22,25 @@ JS_OUTPUT_NAME = "i18n.js"
 JS_INPUT_PATH = "template-tools/i18n/i18n_temlate.js"
 CONFIG_PATH = "react-template.yaml"
 CUSTOM_HTML_HEAD_FIELD = "customHtmlHead"
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def create_i18n_js(project_dir: str):
-    yaml_path = os.path.join(project_dir, DATA_PATH)
-    data = parse_yaml_file(yaml_path)
+    # Load the project data file (if it exists)
+    try:
+        project_data_path = os.path.join(project_dir, DATA_PATH)
+        project_data = parse_yaml_file(project_data_path) or {}
+    except Exception:
+        project_data = {}
+    # Load the template data file
+    template_data_path = os.path.join(SCRIPT_DIR, DATA_PATH)
+    template_data = parse_yaml_file(template_data_path)
+    # Merge the two data files
+    merged_data = template_data
+    merged_data.update(project_data)
+    # Inject the data into the file
     js_output_path = "public/"+JS_OUTPUT_NAME
-    inject_data_into_js_file(data, JS_INPUT_PATH, js_output_path)
+    inject_data_into_js_file(merged_data, JS_INPUT_PATH, js_output_path)
 
 
 def inject_data_into_js_file(data, js_input_file: str, js_output_file: str):
@@ -41,8 +54,9 @@ def inject_data_into_js_file(data, js_input_file: str, js_output_file: str):
 def inject_script_url_into_config():
     yaml_path = os.path.join(project_dir, CONFIG_PATH)
     config = parse_yaml_file(yaml_path)
+    script_tag = f'<script src="%PUBLIC_URL%/{JS_OUTPUT_NAME}"></script>'
     custom_html_head = config.get(CUSTOM_HTML_HEAD_FIELD, "")
-    custom_html_head += f'<script src="%PUBLIC_URL%/{JS_OUTPUT_NAME}"></script>'
+    custom_html_head += script_tag
     config[CUSTOM_HTML_HEAD_FIELD] = custom_html_head
     text = yaml.safe_dump(config)
     write_file_bytes(CONFIG_PATH, text.encode(CODEC))
@@ -56,7 +70,7 @@ def parse_yaml_file(yamlPath: str):
 def write_file_bytes(path: str, content: bytes):
     try:
         os.makedirs(os.path.dirname(path))
-    except:
+    except Exception:
         pass
 
     with open(path, "wb") as f:
