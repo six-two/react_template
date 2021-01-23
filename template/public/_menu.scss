@@ -1,3 +1,15 @@
+.page-header {
+  // Keeps space free for the overflow menu button shown on small and medium screens
+  .nav-button-placeholder {
+    width: 50px;
+    flex: none;
+
+    @media #{$big-screen} {
+      width: 0px;
+    }
+  }
+}
+
 .page-header nav {
   position: absolute;
   top: 5px;
@@ -9,8 +21,8 @@
   label {
     display: block;
     float: right;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     box-sizing: border-box;
     padding-top: 10px;
     cursor: pointer;
