@@ -31,6 +31,12 @@ const applyLang = (lang) => {
             console.debug(`Element "${id}" does not exist`);
         }
     }
+
+    // Update the language chooser, if it exists
+    lang_chooser = document.getElementById("page-language-chooser");
+    if (lang_chooser) {
+        lang_chooser.value = lang;
+    }
 }
 
 const getLang = () => {
@@ -48,6 +54,29 @@ const updateLang = () => {
         applyLang(lang);
     }
 }
+
+// If the language changer exists, make it change the "lang" param in the URL
+window.addEventListener("load", () => {
+    lang_chooser = document.getElementById("page-language-chooser");
+    if (lang_chooser) {
+        const set_url_language_param = (lang) => {
+            const old_url = window.location.href;
+        
+            const url_builder = new URL(old_url);
+            url_builder.searchParams.set("lang", lang);
+            const new_url = url_builder.toString();
+        
+            if (old_url !== new_url) {
+                console.log(`Updated URL: "${old_url}" -> "${new_url}"`);
+                window.history.replaceState({}, "", new_url);
+            }
+        }
+
+        lang_chooser.addEventListener("change", (e) => {
+            set_url_language_param(e.target.value);
+        })
+    }
+})
 
 // Repeatedly check url lang, and update elements if it changes
 setInterval(updateLang, 100);

@@ -1,0 +1,29 @@
+#page-language-chooser {
+    appearance      : none;
+    outline         : none;
+    border          : none;
+    background-color: transparent;
+    font-family     : inherit;
+    font-size       : inherit;
+    width           : 100%;
+    cursor          : inherit;
+    line-height     : inherit;
+    padding         : 5px;
+    margin          : 0;
+
+    display: block;
+    width: 36px;
+    height: 36px;
+    margin-top: 5px;
+    margin-right: 60px;
+    background-color: #ddd;
+    border-radius: 5px;
+    font-size: 25px;
+    // color: transparent;
+}
+
+.page-language-chooser-label {
+    display  : none;
+    width    : 100px;
+    font-size: 15pt;
+}
