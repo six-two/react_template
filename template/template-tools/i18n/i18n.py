@@ -115,11 +115,13 @@ def inject_script_url_into_config(i18n_config: dict, project_dir: str):
         config[LANGUAGE_CHOOSER_DOM_FIELD] = lang_select
 
         # Append the css link or language selector
-        custom_html_head += "<link rel=stylesheet href=%PUBLIC_URL%/i18n.css>"
-        shutil.move("template-tools/i18n/i18n.scss",
-                    "public/i18n.scss")
+        # custom_html_head += "<link rel=stylesheet href=%PUBLIC_URL%/i18n.css>"
+        # shutil.move("template-tools/i18n/i18n.scss",
+        #             "public/i18n.scss")
         shutil.move("template-tools/i18n/languageicon-org.png",
                     "public/languageicon-org.png")
+    else:
+        config[LANGUAGE_CHOOSER_DOM_FIELD] = ""
 
     config[CUSTOM_HTML_HEAD_FIELD] = custom_html_head
 

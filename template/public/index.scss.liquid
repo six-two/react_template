@@ -1,0 +1,15 @@
+$big-screen: "only screen and (min-width: 768px)";
+$not-big-screen: "only screen and (max-width: 768px)";
+
+
+$header-color-fg: #ddd;
+$header-color-bg: #444;
+
+@import "general";
+@import "layout";
+@import "menu";
+
+// Import the language chooser scss if the language chooser is being used
+{% unless site.language_chooser_dom == "" or site.language_chooser_dom == nil %}
+    @import "i18n";
+{% endunless %}

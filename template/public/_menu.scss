@@ -1,7 +1,7 @@
 .page-header {
   // Keeps space free for the overflow menu button shown on small and medium screens
   .nav-button-placeholder {
-    width: 60px;
+    width: 70px;
     flex: none;
 
     @media #{$big-screen} {
@@ -17,6 +17,7 @@
   background-color: $header-color-fg;
   border: 1px solid black;
   border-radius: 5px;
+  z-index: 99;
 
   label {
     display: block;
@@ -55,6 +56,7 @@
     margin-left: 20px;
     margin-right: 0;
     line-height: initial;
+    // This may give a warning, but is still effective / needed
     vertical-align: middle;
     font-size: 20px;
   }

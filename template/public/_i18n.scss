@@ -9,10 +9,10 @@
     width           : 100%;
     cursor          : inherit;
     line-height     : inherit;
-    padding         : 5px;
-    margin          : 0;
+    padding         : 0px;
+    margin          : 0px;
 
-    // style it
+
     display      : block;
     width        : 40px;
     height       : 40px;
@@ -20,7 +20,14 @@
     border-radius: 5px;
     font-size    : 25px;
     cursor       : pointer;
-    border       : 2px solid black;
+    border       : 1px solid black;
+
+    @media #{$not-big-screen} {
+        position: absolute;
+        top     : 5px;
+        right   : 55px;
+        margin  : 0px;
+    }
 
     // Make it a nice icon
     color              : transparent;
@@ -33,6 +40,24 @@
     &:hover,
     &:focus {
         border-color    : blue;
-        background-color: rgb(159, 159, 255);
+        background-color: rgb(92, 92, 255);
+    }
+
+    // Fix for chromium
+    option {
+        background-color: white;
+        color           : black;
     }
 }
+
+.page-header {
+    // Keeps space free for the overflow menu button shown on small and medium screens
+    .nav-button-placeholder {
+      width: 110px;
+      flex: none;
+  
+      @media #{$big-screen} {
+        width: 0px;
+      }
+    }
+  }
