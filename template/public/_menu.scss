@@ -1,7 +1,7 @@
 .page-header {
   // Keeps space free for the overflow menu button shown on small and medium screens
   .nav-button-placeholder {
-    width: 50px;
+    width: 60px;
     flex: none;
 
     @media #{$big-screen} {
