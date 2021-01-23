@@ -1,4 +1,5 @@
 #page-language-chooser {
+    // Reset the select
     appearance      : none;
     outline         : none;
     border          : none;
@@ -11,19 +12,27 @@
     padding         : 5px;
     margin          : 0;
 
-    display: block;
-    width: 36px;
-    height: 36px;
-    margin-top: 5px;
-    margin-right: 60px;
-    background-color: #ddd;
+    // style it
+    display      : block;
+    width        : 40px;
+    height       : 40px;
+    margin       : 5px;
     border-radius: 5px;
-    font-size: 25px;
-    // color: transparent;
-}
+    font-size    : 25px;
+    cursor       : pointer;
+    border       : 2px solid black;
 
-.page-language-chooser-label {
-    display  : none;
-    width    : 100px;
-    font-size: 15pt;
+    // Make it a nice icon
+    color              : transparent;
+    background-color   : lightgray;
+    background-image   : url("languageicon-org.png");
+    background-repeat  : no-repeat;
+    background-size    : 80% 80%;
+    background-position: center;
+
+    &:hover,
+    &:focus {
+        border-color    : blue;
+        background-color: rgb(159, 159, 255);
+    }
 }

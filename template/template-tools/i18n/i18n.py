@@ -104,22 +104,22 @@ def inject_script_url_into_config(i18n_config: dict, project_dir: str):
 
     languages = i18n_config.get("languages", [])
     if languages:
-        lang_select = ""
-        lang_select += '<select id="page-language-chooser">'
-        lang_select += '<option selected disabled hidden>Select a language</option>'
-        for lang_obj in languages:
-            code = lang_obj["code"]
-            title = lang_obj["title"]
-            lang_select += f'<option value="{code}">{title}</option>'
-        lang_select += "</select>"
-        lang_select += '<label for="page-language-chooser"><div class="page-language-chooser-label">Test</div></label>'
+        lang_select = f'''<select id="page-language-chooser">
+            {"".join([
+                f'<option value="{lang_obj["code"]}">{lang_obj["title"]}</option>'
+                   for lang_obj in languages
+                ])
+            }
+        </select>'''
 
         config[LANGUAGE_CHOOSER_DOM_FIELD] = lang_select
 
         # Append the css link or language selector
         custom_html_head += "<link rel=stylesheet href=%PUBLIC_URL%/i18n.css>"
-        shutil.move("template-tools/i18n/i18n.scss", "public/i18n.scss")
-
+        shutil.move("template-tools/i18n/i18n.scss",
+                    "public/i18n.scss")
+        shutil.move("template-tools/i18n/languageicon-org.png",
+                    "public/languageicon-org.png")
 
     config[CUSTOM_HTML_HEAD_FIELD] = custom_html_head
 
