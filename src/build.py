@@ -110,7 +110,7 @@ def build(settings: Settings):
     config_path = os.path.join(BUILD_DIR, CONFIG_FILE_NAME)
     config = parse_yaml_file(config_path)
     # Make the fields accessible from liquid
-    config = DefaultMunch.fromDict(munchify(config), BUILD_DIR)
+    config = DefaultMunch.fromDict(munchify(config), "")
     log("Config file loaded")
 
     process_files_by_prioritizing_extensions(config, BUILD_DIR)
