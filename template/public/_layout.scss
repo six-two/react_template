@@ -1,22 +1,33 @@
 .page {
-  display: flex;
+  display       : flex;
   flex-direction: column;
 }
 
 .page-header {
-  display: flex;
-  width: 100%;
-  height: 50px;
+  display         : flex;
+  width           : 100%;
+  height          : 50px;
   background-color: $header-color-bg;
-  color: $header-color-fg;
+  color           : $header-color-fg;
+  padding         : 5px 10px;
+
+  &,
+  * {
+    box-sizing: border-box;
+  }
 
   #page-title {
-    flex: 1 1;
-    display: inline-block;
-    font-size: 30px;
-    font-weight: bold;
-    padding: 5px 20px;
-    min-width: 100px;
+    font-size   : 30px;
+    font-weight : bold;
+    min-width   : 100px;
+    margin-right: auto;
+  }
+
+  .page-title-icon {
+    // display: inline-block;
+    width       : 40px;
+    height      : 40px;
+    margin-right: 10px;
   }
 }
 
@@ -25,13 +36,13 @@
 }
 
 .page-footer {
-  margin-top: 20px;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  color: $header-color-fg;
+  margin-top      : 20px;
+  padding         : 10px;
+  width           : 100%;
+  box-sizing      : border-box;
+  color           : $header-color-fg;
   background-color: $header-color-bg;
-  text-align: center;
+  text-align      : center;
 
   a {
     color: $header-color-fg;

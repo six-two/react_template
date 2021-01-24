@@ -21,7 +21,12 @@
   </head>
   <body class="page">
     <header class="page-header">
-      <div id="page-title">{{ site.title }}</div>
+      {% unless site.title_icon == "" or site.title_icon == nil %}
+        <img class="page-title-icon" src="{{ site.title_icon  }}" />
+      {% endunless %}
+      <div id="page-title">
+        {{ site.title }}
+      </div>
       <nav>
         <input type="checkbox" id="nav-trigger" />
         <label for="nav-trigger">
