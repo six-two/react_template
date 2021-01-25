@@ -76,9 +76,18 @@ def load_config(project_dir: str) -> dict:
 def create_i18n_js(i18n_config: dict, project_dir: str):
     translations = i18n_config.get("translations", {})
 
+    languages = set()
+    for translation_dict in translations.values():
+        languages.update(translation_dict.keys())
+
+    js_data = {
+        "languages": list(languages),
+        "translations": translations,
+    }
+
     # Inject the data into the file
     js_output_path = "public/"+JS_OUTPUT_NAME
-    inject_data_into_js_file(translations, JS_INPUT_PATH, js_output_path)
+    inject_data_into_js_file(js_data, JS_INPUT_PATH, js_output_path)
 
 
 def inject_data_into_js_file(data, js_input_file: str, js_output_file: str):

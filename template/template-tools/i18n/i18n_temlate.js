@@ -1,82 +1,117 @@
-const DATA = __I18N_JSON__;
-const DEFAULT_LANG = "en";
+const i18n_script = () => {
+    const DEFAULT_LANG = "en";
+    const DATA = __I18N_JSON__;
+    const LANGUAGES = DATA["languages"];
+    const TRANSLATIONS = DATA["translations"];
 
-console.debug("Language data:", DATA);
+    console.debug("Language data:", DATA);
 
-const applyLang = (lang) => {
-    const data = DATA[lang] || {};
-    console.log(`Applying language: ${lang}`);
-    for (const [id, translations] of Object.entries(DATA)) {
-        elem = document.getElementById(id);
-        if (elem) {
-            let translation = "<ERROR>";
-            try {
-                translation = translations[lang] || translations[DEFAULT_LANG] || "<Missing translation>";
-                console.debug(`Translation for "${id}" is "${translation}"`);
-            } catch (e) {
-                console.warn(e);
+    const getPreferredLanguage = () => {
+        let preferred_list = navigator.languages;
+        if (!preferred_list) {
+            // Fall back to the more supported field
+            preferred_list = [navigator.language];
+        }
+        console.debug("Preferred languages:", preferred_list);
+        console.debug("Translation languages:", LANGUAGES);
+
+        for (lang of preferred_list) {
+            // convert something like "en-US" to "en"
+            short_lang = lang.substr(0, 2);
+            if (LANGUAGES.includes(short_lang)) {
+                console.log(`Selected language "${short_lang}" because it matched "${lang}"`);
+                return short_lang;
             }
+        }
 
-            elem.innerHTML = translation;
-            if (id === "page-title") {
-                // Set the window title and make the page-title element resizeable again
-                document.title = translation;
-                try {
-                    textFit(document.getElementById(id));
-                } catch (error) {
-                    console.warn("Could not make title auto resizeable");
+        console.log("No matching language, falling back on default:", DEFAULT_LANG);
+        return DEFAULT_LANG;
+    }
+
+    const applyLang = (lang) => {
+        console.log(`Applying language: ${lang}`);
+        if (LANGUAGES.includes(lang)) {
+            for (const [id, translations] of Object.entries(TRANSLATIONS)) {
+                elem = document.getElementById(id);
+                if (elem) {
+                    let translation = "<ERROR>";
+                    try {
+                        translation = translations[lang] || translations[DEFAULT_LANG] || "<Missing translation>";
+                        console.debug(`Translation for "${id}" is "${translation}"`);
+                    } catch (e) {
+                        console.warn(e);
+                    }
+
+                    elem.innerHTML = translation;
+                    if (id === "page-title") {
+                        // Set the window title and make the page-title element resizeable again
+                        document.title = translation;
+                        try {
+                            textFit(document.getElementById(id));
+                        } catch (error) {
+                            console.warn("Could not make title auto resizeable");
+                        }
+                    }
+                } else {
+                    console.log(`Element "${id}" does not exist`);
                 }
             }
-        } else {
-            console.debug(`Element "${id}" does not exist`);
+        }
+
+        // Update the language chooser, if it exists
+        lang_chooser = document.getElementById("page-language-chooser");
+        if (lang_chooser) {
+            lang_chooser.value = lang;
         }
     }
 
-    // Update the language chooser, if it exists
-    lang_chooser = document.getElementById("page-language-chooser");
-    if (lang_chooser) {
-        lang_chooser.value = lang;
-    }
-}
-
-const getLang = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("lang") || DEFAULT_LANG;
-}
-
-
-let old_lang = "";
-
-const updateLang = () => {
-    const lang = getLang();
-    if (lang !== old_lang) {
-        old_lang = lang;
-        applyLang(lang);
-    }
-}
-
-// If the language changer exists, make it change the "lang" param in the URL
-window.addEventListener("load", () => {
-    lang_chooser = document.getElementById("page-language-chooser");
-    if (lang_chooser) {
-        const set_url_language_param = (lang) => {
-            const old_url = window.location.href;
-        
-            const url_builder = new URL(old_url);
-            url_builder.searchParams.set("lang", lang);
-            const new_url = url_builder.toString();
-        
-            if (old_url !== new_url) {
-                console.log(`Updated URL: "${old_url}" -> "${new_url}"`);
-                window.history.replaceState({}, "", new_url);
-            }
+    const getLang = () => {
+        const params = new URLSearchParams(window.location.search);
+        let lang = params.get("lang");
+        if (!lang) {
+            console.log("No language set in URL, checking for preferred language");
+            lang = getPreferredLanguage();
         }
-
-        lang_chooser.addEventListener("change", (e) => {
-            set_url_language_param(e.target.value);
-        })
+        return lang;
     }
-})
 
-// Repeatedly check url lang, and update elements if it changes
-setInterval(updateLang, 100);
+
+    let old_lang = "";
+
+    const updateLang = () => {
+        const lang = getLang();
+        if (lang !== old_lang) {
+            old_lang = lang;
+            setUrlLanguageParam(lang);
+            applyLang(lang);
+        }
+    }
+
+    const setUrlLanguageParam = (lang) => {
+        const old_url = window.location.href;
+
+        const url_builder = new URL(old_url);
+        url_builder.searchParams.set("lang", lang);
+        const new_url = url_builder.toString();
+
+        if (old_url !== new_url) {
+            console.log(`Updated URL: "${old_url}" -> "${new_url}"`);
+            window.history.replaceState({}, "", new_url);
+        }
+    }
+
+    window.addEventListener("load", () => {
+        // Repeatedly check url lang, and update elements if it changes
+        setInterval(updateLang, 100);
+
+        // If the language changer exists, make it change the "lang" param in the URL
+        lang_chooser = document.getElementById("page-language-chooser");
+        if (lang_chooser) {
+            lang_chooser.addEventListener("change", (e) => {
+                setUrlLanguageParam(e.target.value);
+            })
+        }
+    })
+};
+
+i18n_script();
