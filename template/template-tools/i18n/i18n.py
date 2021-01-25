@@ -81,7 +81,7 @@ def create_i18n_js(i18n_config: dict, project_dir: str):
         languages.update(translation_dict.keys())
 
     js_data = {
-        "languages": list(languages),
+        "languages": list(sorted(languages)),
         "translations": translations,
     }
 
