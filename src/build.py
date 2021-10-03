@@ -4,7 +4,7 @@ import os
 import subprocess
 from typing import List, Any
 # External libs
-from liquid import Liquid
+from liquid import Environment
 from munch import munchify, DefaultMunch
 
 LIQUID_FILE_EXTENSION = ".liquid"
@@ -18,8 +18,12 @@ def process_liquid(config, file_path: str) -> str:
     os.rename(file_path, new_file_path)
 
     # process with liquid
-    def process_liquid_file_contents(file_contents): return Liquid(
-        file_contents).render(site=config)
+    def process_liquid_file_contents(file_contents):
+        liquid_vars = {"site":config}
+        liquid_env = Environment(globals=liquid_vars)
+        bound_template = liquid_env.from_string(file_contents)
+        return bound_template.render()
+
     replace_file_contents(new_file_path, process_liquid_file_contents)
 
     return new_file_path

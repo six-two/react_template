@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import subprocess
 import os
 import sys
@@ -43,11 +44,13 @@ def exec(*args):
     subprocess.call(args)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("[USAGE] <project_search_root> <commit_message>")
-        sys.exit(1)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("project_search_root", help="this folder and its subfolders will be searched")
+    ap.add_argument("-c", "--commit-message", help="commit the changes with the following message")
+    ap.add_argument("-f", "--force", action="store_true", help="force update, even if the git working tree not clean")
+    args = ap.parse_args()
 
-    search_root_dir = sys.argv[1]
+    search_root_dir = args.project_search_root
     commit_message = sys.argv[2]
 
     print(f"[INFO] Searching for projects in '{search_root_dir}'")
@@ -58,7 +61,10 @@ if __name__ == "__main__":
 
         for repo in project_folders:
             cd(repo)
-            if is_git_repo_clean():
+            is_clean = is_git_repo_clean()
+            if is_clean or args.force:
+                if not is_clean:
+                    print("[WARN] Your working tree is not clean. Please chommit your changes before running this")
                 if ask_user_to_confirm(f"Updating '{repo}'"):
                     cd()
                     exec("src/main.py", repo)
@@ -68,7 +74,7 @@ if __name__ == "__main__":
                         print("[INFO] No files were changed")
                     else:
                         exec("git", "status")
-                        if ask_user_to_confirm("Commit and push the changes"):
+                        if args.commit_message and ask_user_to_confirm("Commit and push the changes"):
                             exec("git", "add", ".")
                             exec("git", "commit", "-m", commit_message)
                             exec("git", "push")

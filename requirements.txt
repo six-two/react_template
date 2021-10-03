@@ -1,0 +1,4 @@
+pyyaml
+python-liquid
+munch
+htmlmin
